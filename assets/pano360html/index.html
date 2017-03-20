@@ -31,33 +31,10 @@
 	<div id="container"></div>
 
 	<script>
-		var PSV =  null;
-		Ti.App.addEventListener('com.caffeina.titanium.pano360', function(e) {
-			if (e.method == null) return;
-			var method = e.method;
-			var args = e.args || {};
-
-			switch (method) {
-
-				case '__init__':
-				args.container = document.getElementById('container');
-				PSV = new PhotoSphereViewer(args);
-				PSV.on('ready', function() { 
-					if (args.gyroscope) {
-						PhotoSphereViewer.SYSTEM.deviceOrientationSupported.promise.then(function() { 
-							PSV.startGyroscopeControl(); 
-						}); 
-					}
-				});
-				break;
-
-				default:
-				// Proxy all other method
-				console.log('Calling PSV.' + method + ' ' + JSON.stringify(args));
-				PSV[method].apply(PSV, args);
-				break;
-			}
-		});
+		function __init(args) {
+			args.container = document.getElementById('container');
+			window.PSV = new PhotoSphereViewer(args);
+		}
 	</script>
 </body>
 </html>

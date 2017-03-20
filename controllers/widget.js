@@ -6,9 +6,6 @@ if (args.panorama == null) {
 	Ti.API.warn('You should pass a panorama key to set the initial image');
 }
 
-// Name of the proxy events
-var WNAME = 'com.caffeina.titanium.pano360';
-
 // Proxy all original Pano360 methods setter
 [
 'destroy',
@@ -29,10 +26,7 @@ var WNAME = 'com.caffeina.titanium.pano360';
 'setCaption'
 ].forEach(function(method) {
 	exports[method] = function() {
-		Ti.App.fireEvent(WNAME, {
-			method: method,
-			args: arguments // JS arguments property
-		});
+		$.mainView.evalJS('window.PSV.' + method + '(' + JSON.stringify([].slice.call(arguments, 0)) + ')');
 	};
 });
 
@@ -50,8 +44,5 @@ $.mainView.url = Ti.Filesystem.getFile(WPATH('/pano360html/index.html')).resolve
 
 $.mainView.addEventListener('load', function() {
 	// Init all the things by passing the initial widget arguments
-	Ti.App.fireEvent(WNAME, {
-		method: '__init__',
-		args: args
-	});
+	$.mainView.evalJS('__init(' + JSON.stringify(args) + ')');
 });
