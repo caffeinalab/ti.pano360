@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta name="viewport" content="initial-scale=1.0" />
+
+	<link rel="stylesheet" href="./photo-sphere-viewer.min.css" />
+	<style>
+		html, body, #container{
+			margin: 0;
+			background: #000;
+			position: fixed;
+			top: 0;
+			left: 0;
+			right: 0;
+			bottom: 0;
+			width: 100%;
+			height: 100%;
+		}
+	</style>
+
+	<script src="./three.jsf"></script>
+	<script src="./three.doc.jsf"></script>
+	<script src="./D.jsf"></script>
+	<script src="./uevent.jsf"></script>
+	<script src="./dot.jsf"></script>
+	
+	<script src="./photo-sphere-viewer.jsf"></script>
+
+</head>
+<body>
+	<div id="container"></div>
+
+	<script>
+		var PSV =  null;
+		Ti.App.addEventListener('com.caffeina.titanium.pano360', function(e) {
+			if (e.method == null) return;
+			var method = e.method;
+			var args = e.args || {};
+
+			switch (method) {
+
+				case '__init__':
+				args.container = document.getElementById('container');
+				PSV = new PhotoSphereViewer(args);
+				PSV.on('ready', function() { 
+					if (args.gyroscope) {
+						PhotoSphereViewer.SYSTEM.deviceOrientationSupported.promise.then(function() { 
+							PSV.startGyroscopeControl(); 
+						}); 
+					}
+				});
+				break;
+
+				default:
+				// Proxy all other method
+				console.log('Calling PSV.' + method + ' ' + JSON.stringify(args));
+				PSV[method].apply(PSV, args);
+				break;
+			}
+		});
+	</script>
+</body>
+</html>
