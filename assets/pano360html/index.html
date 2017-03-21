@@ -3,7 +3,7 @@
 <head>
 	<meta name="viewport" content="initial-scale=1.0" />
 
-	<link rel="stylesheet" href="./photo-sphere-viewer.min.css" />
+	<link rel="stylesheet" href="./photo-sphere-viewer.css" />
 	<style>
 		html, body, #container{
 			margin: 0;
@@ -34,7 +34,19 @@
 		function __init(args) {
 			args.container = document.getElementById('container');
 			window.PSV = new PhotoSphereViewer(args);
+			if (args.autostartGyroscope) {
+				PSV.on('ready', function() { 
+					PhotoSphereViewer.SYSTEM.deviceOrientationSupported.promise.then(function() { 
+						PSV.startGyroscopeControl();
+					}); 
+				});
+			}
 		}
+		// __init({
+		// 	panorama: 'example.jpg',
+		// 	gyroscope: true,
+		// 	autostartGyroscope: true
+		// });
 	</script>
 </body>
 </html>
