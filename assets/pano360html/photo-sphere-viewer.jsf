@@ -336,7 +336,8 @@ function PhotoSphereViewer(options) {
    * @property {int} start_mouse_y - start y position of the click/touch
    * @property {int} mouse_x - current x position of the cursor
    * @property {int} mouse_y - current y position of the cursor
-   * @property {int} angle_alpha - current angle alpha offset value
+   * @property {int} gyro_angle_alpha - current angle alpha offset value
+   * @property {int} gyro_angle_beta - current angle beta offset value
    * @property {Array[]} mouse_history - list of latest positions of the cursor, [time, x, y]
    * @property {int} pinch_dist - distance between fingers when zooming
    * @property orientation_reqid - animationRequest id of the device orientation
@@ -368,7 +369,8 @@ function PhotoSphereViewer(options) {
     mouse_x: 0,
     mouse_y: 0,
     mouse_history: [],
-    angle_alpha: 0,
+    gyro_angle_alpha: 0,
+    gyro_angle_beta: 0,
     pinch_dist: 0,
     orientation_reqid: null,
     autorotate_reqid: null,
@@ -1780,7 +1782,8 @@ PhotoSphereViewer.prototype._move = function(evt, log) {
 
     // If the the gyroscope tick is running, only save the offset angle
     if (this.isGyroscopeEnabled()) {
-      this.prop.angle_alpha += (x - this.prop.mouse_x) / this.prop.size.width * this.prop.move_speed * this.prop.hFov;
+      this.prop.gyro_angle_alpha += (x - this.prop.mouse_x) / this.prop.size.width * this.prop.move_speed * this.prop.hFov;
+      this.prop.gyro_angle_beta += (y - this.prop.mouse_y) / this.prop.size.width * this.prop.move_speed * this.prop.hFov;
     }
     else {
       this.rotate({
@@ -2224,7 +2227,8 @@ PhotoSphereViewer.prototype.startGyroscopeControl = function() {
 
   (function run() {
     self.doControls.update();
-    self.doControls.updateAlphaOffsetAngle(self.prop.angle_alpha);
+    self.doControls.updateAlphaOffsetAngle(self.prop.gyro_angle_alpha);
+    self.doControls.updateBetaOffsetAngle(self.prop.gyro_angle_beta);
 
     self.prop.direction = self.camera.getWorldDirection();
 
