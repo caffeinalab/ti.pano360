@@ -23,7 +23,7 @@
 	<script src="./D.jsf"></script>
 	<script src="./uevent.jsf"></script>
 	<script src="./dot.jsf"></script>
-	
+
 	<script src="./photo-sphere-viewer.jsf"></script>
 
 </head>
@@ -31,16 +31,35 @@
 	<div id="container"></div>
 
 	<script>
+		function callPSVMethod(method) {
+			if (window.PSV) {
+				var args = [].slice.call(arguments).splice(1);
+
+				return window.PSV[method].apply(window.PSV, args);
+			} else {
+				window.__postponedCalls = window.__postponedCalls || [];
+				window.__postponedCalls.push(arguments);
+			}
+		}
+
 		function __init(args) {
 			args.container = document.getElementById('container');
 			window.PSV = new PhotoSphereViewer(args);
-			if (args.autostartGyroscope) {
-				PSV.on('ready', function() { 
-					PhotoSphereViewer.SYSTEM.deviceOrientationSupported.promise.then(function() { 
+			PSV.on('ready', function() {
+				if (args.autostartGyroscope) {
+					PhotoSphereViewer.SYSTEM.deviceOrientationSupported.promise.then(function() {
 						PSV.startGyroscopeControl();
-					}); 
-				});
-			}
+					});
+				}
+
+				if (window.__postponedCalls && window.__postponedCalls.length > 0) {
+					window.__postponedCalls.forEach(function(call_args) {
+						callPSVMethod.apply(window, [].slice.call(call_args));
+					});
+
+					window.__postponedCalls = [];
+				}
+			});
 		}
 		// __init({
 		// 	panorama: 'example.jpg',

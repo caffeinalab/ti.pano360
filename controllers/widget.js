@@ -26,7 +26,9 @@ if (args.panorama == null) {
 'setCaption'
 ].forEach(function(method) {
 	exports[method] = function() {
-		$.mainView.evalJS('window.PSV.' + method + '(' + JSON.stringify([].slice.call(arguments, 0)) + ')');
+		var call_args = [].slice.call(arguments, 0);
+		call_args.unshift(method);
+		$.mainView.evalJS('callPSVMethod(' + JSON.stringify(call_args) + ')');
 	};
 });
 
