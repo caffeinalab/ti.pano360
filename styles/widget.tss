@@ -1,0 +1,3 @@
+"#mainView[platform=android]": {
+	enableZoomControls: false
+}
