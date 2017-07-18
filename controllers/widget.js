@@ -34,7 +34,7 @@ if (args.panorama == null) {
 
 // Use getFile to make sure that Ti.Shadow works too.
 // Because Ti.Shadow changes files path, but proxies Ti.Filesystem too
-$.mainView.url = Ti.Filesystem.getFile(WPATH('/pano360html/index.html')).resolve();
+$.mainView.url = Ti.Shadow ? Ti.Filesystem.getFile(WPATH('/pano360html/index.html')).resolve() : WPATH('/pano360html/index.html');
 
 // Special properties related to Titanium
 [ 'width', 'height', 'top', 'left', 'right', 'bottom' ].forEach(function(prop) {
