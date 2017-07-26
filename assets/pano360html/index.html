@@ -32,7 +32,7 @@
 
 	<script>
 		function callPSVMethod(method) {
-			if (window.PSV) {
+			if (window.PSVReady) {
 				var args = [].slice.call(arguments).splice(1);
 
 				return window.PSV[method].apply(window.PSV, args);
@@ -46,6 +46,7 @@
 			args.container = document.getElementById('container');
 			window.PSV = new PhotoSphereViewer(args);
 			PSV.on('ready', function() {
+				window.PSVReady = true;
 				if (args.autostartGyroscope) {
 					PhotoSphereViewer.SYSTEM.deviceOrientationSupported.promise.then(function() {
 						PSV.startGyroscopeControl();
