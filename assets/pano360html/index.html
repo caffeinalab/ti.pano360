@@ -32,7 +32,7 @@
 
 	<script>
 		function callPSVMethod(method) {
-			if (window.PSVReady) {
+			if (window.__ready) {
 				var args = [].slice.call(arguments).splice(1);
 
 				return window.PSV[method].apply(window.PSV, args);
@@ -45,20 +45,18 @@
 		function __init(args) {
 			args.container = document.getElementById('container');
 			window.PSV = new PhotoSphereViewer(args);
-			PSV.on('ready', function() {
-				window.PSVReady = true;
+			window.PSV.on('ready', function() {
+				window.__ready = true;
 				if (args.autostartGyroscope) {
 					PhotoSphereViewer.SYSTEM.deviceOrientationSupported.promise.then(function() {
-						PSV.startGyroscopeControl();
+						window.PSV.startGyroscopeControl();
 					});
 				}
 
 				if (window.__postponedCalls && window.__postponedCalls.length > 0) {
-					window.__postponedCalls.forEach(function(call_args) {
-						callPSVMethod.apply(window, [].slice.call(call_args));
-					});
-
-					window.__postponedCalls = [];
+					while (window.__postponedCalls.length) {
+						callPSVMethod.apply(window, [].slice.call(window.__postponedCalls.pop()));
+					}
 				}
 			});
 		}
