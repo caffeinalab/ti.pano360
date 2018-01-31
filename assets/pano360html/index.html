@@ -42,7 +42,7 @@
 			}
 		}
 
-		function __init(args) {
+		function __init(args, events) {
 			args.container = document.getElementById('container');
 			window.PSV = new PhotoSphereViewer(args);
 			window.PSV.on('ready', function() {
@@ -59,12 +59,31 @@
 					}
 				}
 			});
+
+			__prepareEvents(events);
 		}
 		// __init({
 		// 	panorama: 'example.jpg',
 		// 	gyroscope: true,
 		// 	autostartGyroscope: true
 		// });
+
+		function __prepareEvents(events) {
+			if (events == null || !events.length) return;
+			if (window.PSV == null) {
+				console.error('Error: Pano360: prepare events called but window.PSV is null.');
+				return;
+			}
+
+			events.forEach(function(event) {
+				if (event.eventName == null || event.appEventName == null) return;
+
+				window.PSV.on(event.eventName, function() {
+					// TODO find a way to pass the event parameters
+					Ti.App.fireEvent(event.appEventName, {});
+				});
+			});
+		}
 	</script>
 </body>
 </html>
