@@ -56,6 +56,7 @@ var VIEW_ATTRS = [
 'left',
 'right',
 'bottom',
+'borderRadius'
 ];
 
 // Get all the Photo Sphere Viewer arguments
