@@ -90,7 +90,7 @@ if (panoArgs.panorama == null) {
 	exports[method] = function() {
 		var call_args = [].slice.call(arguments, 0);
 		call_args.unshift(method);
-		$.mainView.evalJS('callPSVMethod(' + JSON.stringify(call_args) + ')');
+		$.mainView.evalJS('callPSVMethod(' + JSON.stringify(call_args) + ')', function() { /* empty callback to fix a crash on iOS. See https://jira.appcelerator.org/browse/TIMOB-26709 */ });
 	};
 });
 
@@ -123,5 +123,5 @@ $.mainView.addEventListener('load', function() {
 	});
 
 	// Init all the things by passing the initial widget arguments
-	$.mainView.evalJS('__init(' + JSON.stringify(panoArgs) + ',' + JSON.stringify(eventEmitters) + ')');
+	$.mainView.evalJS('__init(' + JSON.stringify(panoArgs) + ',' + JSON.stringify(eventEmitters) + ')', function() { /* empty callback to fix a crash on iOS. See https://jira.appcelerator.org/browse/TIMOB-26709 */ });
 });
